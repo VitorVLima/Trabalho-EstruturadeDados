@@ -3,279 +3,162 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct _node{
-    int val;
-    struct _node *next;
-}Node;
-
-typedef struct _linked_list{
-    Node *begin;
-    Node *end;
-}LinkedList;
-
-Node * Node_create( int val){ //Cria novo nó
-    Node * node = (Node*)calloc(1,sizeof(Node));
-    node->val = val;
-    node->next = NULL;
-    return node;
+Lista* criaLista() {
+    return NULL;
 }
 
-LinkedList * LinkedList_create(){ //Cria nova lista 
-    LinkedList * L = (LinkedList *)calloc(1, sizeof(LinkedList));
-    L->begin = NULL;
-    L->end = NULL;
-    return L;
-}
-
-
-
-void LinkedList_add_first(LinkedList *L, int val){ //adiciona no inicio
-    Node * p = Node_create(val);
-    //lista está vazia
-    if(L->begin == NULL){
-        L->begin = p;
-        L->end = p;
-    }else{
-       p->next = L->begin;
-       L->begin = p;
+void inserirLista_inicio(Lista **lista, int i) {
+    Lista* novo = (Lista*)malloc(sizeof(Lista));
+    if (novo == NULL) { // Verifica se a alocação de memória foi bem-sucedida
+        fprintf(stderr, "Falha na alocação de memória\n");
+        exit(EXIT_FAILURE);
     }
+    novo->info = i;
+    novo->prox = *lista;
+    *lista = novo;
 }
 
 
-
-void LinkedList_add_last(LinkedList *L, int val){ //adiciona no fim
-    //lista está vazia
-    Node * q = Node_create(val);
-    if(L->begin == NULL){
-        L->begin = q;
-        L->end = q;
-    }else{
-        L->end->next = q;
-        L->end = L->end->next;
+void inserirLista_fim(Lista **lista, int i) {
+    Lista* novo = (Lista*) malloc(sizeof(Lista));
+    if (novo == NULL) { 
+        fprintf(stderr, "Falha na alocação de memória\n");
+        exit(EXIT_FAILURE);
     }
-}
-
-void LinkedList_add_element(LinkedList *L, int val, int index) { //aciona pelo indice passado como parametro
-    if (index < 0) {
-        printf("impossivel acessar indice negativo\n");
-        return;
-    }
-
-    Node *q = Node_create(val);
     
-     if (index == 0) {
-        q->next = L->begin;
-        L->begin = q;
-        if (L->end == NULL) { // Se a lista estava vazia
-            L->end = q;
+    novo->info = i;
+    novo->prox = NULL; 
+
+    if (*lista == NULL) { 
+        *lista = novo;
+    } else {
+        Lista* p = *lista; 
+        while (p->prox != NULL) { 
+            p = p->prox;
         }
+        p->prox = novo; 
+    }
+}
+
+void inserirLista_indice(Lista **lista, int i, int index) {
+    Lista* novo = (Lista*) malloc(sizeof(Lista));
+    if (novo == NULL) { 
+        fprintf(stderr, "Falha na alocação de memória\n");
+        exit(EXIT_FAILURE);
+    }
+
+    novo->info = i;
+    novo->prox = NULL;
+
+    if (index == 0) { 
+        novo->prox = *lista;
+        *lista = novo; 
         return;
     }
- 
-    Node *p = L->begin;
-    for (int cont = 0; cont < index - 1; cont++) {
+    
+    int cont = 0;
+    Lista* p = *lista;
+     for (int cont = 0; cont < index - 1; cont++) {
         if (p == NULL) {
             printf("Lista nao possui elementos suficientes para acessar essa posicao\n");
-            free(q);
+            free(novo);
             return;
         }
-        p = p->next;
+        p = p->prox;
     }
-
-    if (p == NULL) {
+        if (p == NULL) {
         printf("Lista nao possui elementos suficientes para acessar essa posicao\n");
-        free(q);
+        free(novo);
         return;
-    }
-
-    q->next = p->next;
-    p->next = q;
-     if (q->next == NULL) { // Se o novo nó é o último
-        L->end = q;
-    }
+        }
+        novo->prox = p->prox;
+        p->prox = novo;
 }
 
-void LinkedList_add_Order(LinkedList *L, int val){ //adicionar em ordem
-    Node * q = Node_create(val);
-    if(L->begin == NULL){
-        L->begin = q;
-        L->end = q;
-        printf("valor adicionado no inicio\n");
+void inserirOrdem(Lista **lista, int i){
+    Lista* novo = (Lista*) malloc(sizeof(Lista));
+    if (novo == NULL) { 
+        fprintf(stderr, "Falha na alocação de memória\n");
+        exit(EXIT_FAILURE);
+    }
+    novo->info = i;
+    novo->prox = NULL; 
+
+    if(*lista == NULL){
+        *lista = novo;
+        printf("valor adicionado a lista em ordem crescente\n");
+        return;
+    }
+    Lista * p = *lista;
+    Lista * ant = NULL;
+    while(p!=NULL && p->info < i){
+        ant = p;
+        p = p->prox;
+    }
+    if(ant==NULL){
+        *lista = novo;
+        novo->prox = p;
     }else{
-        Node * p = L->begin;
-        Node * ant = NULL;
-        while(p!=NULL && p->val < val){
-            ant = p;
-            p = p->next;
-    
-        }
-        if(p==NULL){ //adicionar no final com mais de 1 elemento
-                L->end->next = q;
-                L->end = L->end->next;
-        }else if(ant == NULL){ //adicionar no começo com mais de um elemento
-                q->next = L->begin;
-                L->begin = q;
-        }else{
-                ant->next = q;
-                q->next = p;
-        }
-        printf("valor adicionado com sucesso\n");
+        ant->prox = novo;
+        novo->prox = p;
+    }
+    printf("valor adicionado a lista em ordem crescente\n");
+}
+
+
+void imprimeLista(Lista *l) { 
+    Lista *p;
+    for (p = l; p != NULL; p = p->prox) {
+        printf("%d\n", p->info);
     }
 }
 
-void LinkedList_remove_first(LinkedList *L){ //remove o primeiro elemento
-    if(L->begin == NULL){
-        printf("Lista vazia\n");
-        return;
-    }
-    Node * p = L->begin;
-    L->begin = L->begin->next;
-    if(L->begin == NULL){
-        L->end = NULL;
-    }
-    free(p);
-    printf("item removido com sucesso\n");
-}
-
-void LinkedList_remove_last(LinkedList *L){ //remove o ultimo elemento
-    if(L->begin == NULL){ //lista vazia
-        printf("Lista vazia\n");
-        return;
-    }
-    Node * p = L->begin->next;
-    Node * ant = L->begin;
-    if(L->begin->next == NULL){ //lista possui 1 elemento
-        L->begin = NULL;
-        L->end = NULL;
-        free(ant);
-    }else{
-        while(p->next!= NULL){ //lista com mais de 1 elemento
-            p = p->next;
-            ant = ant->next;
-        }
-        L->end = ant;
-        ant->next = NULL;
-        free(p);
-    }
-
-}
-
-void LinkedList_remove_element(LinkedList *L, int index) { //remove o elemento passado como indice
-    if (L->begin == NULL) { // lista vazia
-        printf("Lista vazia\n");
-        return;
-    }
-
-    if (index < 0) { // índice inválido
-        printf("Índice inválido\n");
-        return;
-    }
-
-    if (index == 0) { // valor no início
-        Node *p = L->begin;
-        L->begin = L->begin->next;
-        if (L->begin == NULL) { // valor no início com apenas 1 elemento
-            L->end = NULL;
-        }
-        free(p);
-        printf("Item removido com sucesso\n");
-    } else { // valor a partir do segundo elemento
-        Node *p = L->begin; 
-        Node *ant = NULL; 
-        int cont = 0;
-
-        while (p != NULL && cont < index) {
-            ant = p; 
-            p = p->next; 
-            cont++;
-        }
-
-        if (p != NULL) { // um valor foi encontrado
-            if (p->next == NULL) { // valor no fim
-                L->end = ant;
-                ant->next = NULL; 
-            } else { // valor no meio
-                ant->next = p->next; 
-            }
-            free(p); 
-            printf("Item removido com sucesso\n");
-        } else { // valor não encontrado
-            printf("Índice inválido\n");
+void buscaLista(Lista *l, int val){
+    Lista *p;
+    for(p = l; p != NULL; p = p->prox){
+        if(p->info == val){
+            printf("valor %d encontrado na lista\n", val);
             return;
-        }
+         }
     }
+    printf("valor nao encontrado na lista\n");
 }
 
-    
-
-
-void LinkedList_print(LinkedList *L){ //imprime elementos
-    Node * p;
-    int cont=1;
-    p = L->begin;
-    while(p != NULL){
-        printf("valor %d: %d\n", cont, p->val);
-        p = p->next;
-        cont++;
-    }
-    printf("\n");
-}
-
-bool LinkedList_empty(LinkedList *L){ //confirma se lista está vazia
-    if(L->begin == NULL){
+bool listaVazia(Lista **lista){
+    if(*lista == NULL){
         return true;
     }else{
         return false;
     }
 }
 
-void LinkedList_search(LinkedList *L, int index){ //busca elementos
-    Node * p = L->begin;
-    int cont = 0;
-    while(p!= NULL){
-        if(cont == index){
-            printf("valor contido na posicaoo %d da lista e: %d\n", cont, p->val);
-            return;
-        }
-        p = p->next;
-        cont++;
+void retiraLista(Lista **lista, int val){
+    Lista * ant = NULL;
+    Lista * p = *lista;
+    while(p != NULL && p->info != val){
+        ant = p;
+        p = p->prox;
     }
-    printf("indice nao encontrado ou fora do escopo da lista\n");
-}
-
-void LinkedList_Order(LinkedList *L){ //coloca elementos que estao fora de ordem, em ordem crescente
-    if(L->begin == NULL){
-        printf("impossivel ordernar lista vazia\n");
-    }else if(L->begin->next == NULL){
-        printf("impossivel ordernar lista com apenas 1 elemento\n");
+    if(p == NULL){
+        printf("valor nao encontrado");
+        return;
+    }
+    if(ant == NULL){
+        *lista = p->prox;
     }else{
-        Node * p = L->begin->next;
-        Node * ant = L->begin;
-        int val;
-        int cont;
-        do{
-            cont = 0;
-            p = L->begin->next;
-            ant = L->begin;
-            while(p!=NULL){
-                if(p->val < ant->val){
-                    val = p->val;
-                    p->val = ant->val;
-                    ant->val = val;
-                    p = p->next;
-                    ant = ant->next;
-                    cont=1;
-                }else{
-                    p = p->next;
-                    ant = ant->next;
-                }
-            }
-        }while(cont == 1);
+        ant->prox = p->prox;
     }
-    
+    free(p);
+    printf("valor removido com sucesso\n");
 }
 
-
-
-
-
+void liberaLista(Lista *l){
+    Lista *p = l;
+    while(p != NULL){
+        //guarda referência para o próximo elemento
+        Lista *t = p->prox;
+        free(p); //libera a memória apontada por p
+        p = t; //faz p apontar para o próximo
+    }
+    l=NULL;
+}

@@ -1,23 +1,23 @@
 #include "lista.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
- 
-int main(){
 
-    LinkedList * lista = LinkedList_create();
-    LinkedList_add_Order(lista,14);
-    LinkedList_add_Order(lista,10);
-    LinkedList_add_Order(lista,5);
-    LinkedList_add_Order(lista,18);
-    LinkedList_add_Order(lista,12);
-    LinkedList_print(lista);
-    LinkedList_add_Order(lista,9);
-    LinkedList_print(lista);
+//nome: vitor vinicius lima silva
 
+int main() {
+    Lista* l = criaLista();
     
-
-
+    inserirOrdem(&l, 23);
+    inserirOrdem(&l, 40);
+    inserirOrdem(&l, 10);
+    inserirOrdem(&l, 20);
+    imprimeLista(l); 
+    if(listaVazia(&l)){
+        printf("lista vazia\n");
+    }else{
+        printf("lista nao vazia\n");
+    }
+    
 
 
     return 0;
