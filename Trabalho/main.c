@@ -39,6 +39,7 @@ int main(){
         printf("\ndigite [1] para cadastrar nova fruta\n[2] para listar frutas em estoque\n[3] para fazer uma busca especifica\n");
         printf("[4] para alterar dados de uma fruta\n[5] para excluir fruta caso esteja sem estoque\n[6] realizar uma venda \n ou [0] para sair ");
         scanf("%d", &opcao);
+    
     }
     printf("\nfim do programa\n");
 

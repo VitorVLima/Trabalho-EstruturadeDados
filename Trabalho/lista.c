@@ -30,10 +30,11 @@ Node * Node_create(){ //Cria novo nó
     getchar(); 
     printf("digite a quantidade de frutas a serem adicionadas em estoque: ");
     scanf("%d", &node->quantidade);
-    getchar(); 
+    getchar();
      node->next = NULL;
     printf("fruta adicionada com sucesso\n");
     printf("\n");
+
     return node;
 }
 
@@ -48,12 +49,12 @@ LinkedList * LinkedList_create(){ //Cria nova lista
 
 void LinkedList_add(LinkedList *L) {
     Node *new_node = Node_create();
-
+   
     // Verifica se o código já existe na lista
     Node *p = L->begin;
     while (p != NULL) {
         if (new_node->codigo == p->codigo) {
-            printf("Codigo digitado ja está associado a outra fruta, tente novamente\n");
+            printf("Codigo digitado ja esta associado a outra fruta, tente novamente\n");
             free(new_node);
             return;
         }
@@ -221,7 +222,6 @@ void LinkedList_sell(LinkedList *L){
     fclose(file);
     printf("venda concluida e adicionada ao historico com sucesso.\n");
 }
-
 
 
 
