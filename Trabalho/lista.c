@@ -215,7 +215,7 @@ void LinkedList_sell(LinkedList *L){
     }
 
     fprintf(file,"=========Historico de venda======\n");
-    fprintf(file,"%d unidade de %s\n",quantidade, p->nome);
+    fprintf(file,"%d unidade(s) de %s\n",quantidade, p->nome);
     fprintf(file,"valor a receber: %.2f\n", quantidade*p->preco);
     fprintf(file,"===================================\n\n");
 
